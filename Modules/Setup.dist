@@ -155,7 +155,7 @@ _symtable symtablemodule.c
 # it, depending on your system -- see the GNU readline instructions.
 # It's okay for this to be a shared library, too.
 
-#readline readline.c -lreadline -ltermcap
+readline readline.c -lreadline -ltermcap
 
 
 # Modules that should always be present (non UNIX dependent):
@@ -191,7 +191,7 @@ select selectmodule.c	# select(2); not on ancient System V
 mmap mmapmodule.c
 
 # CSV file helper
-#_csv _csv.c
+_csv _csv.c
 
 # Socket module helper for socket(2)
 _socket socketmodule.c
@@ -202,6 +202,9 @@ _socket socketmodule.c
 #_ssl _ssl.c \
 #	-DUSE_SSL -I$(SSL)/include -I$(SSL)/include/openssl \
 #	-L$(SSL)/lib -lssl -lcrypto
+_ssl _ssl.c -Wl,-Bsymbolic-functions -lssl -lcrypto -ldl -lz
+_hashlib _hashopenssl.c -Wl,-Bsymbolic-functions -lssl -lcrypto -ldl -lz
+
 
 # The crypt module is now disabled by default because it breaks builds
 # on many systems (where -lcrypt is needed), e.g. Linux (I believe).
@@ -383,8 +386,10 @@ _codecs_kr cjkcodecs/_codecs_kr.c
 
 # Example -- included for reference only:
 # xx xxmodule.c
-#bz2 bz2module.c
+bz2 bz2module.c -lbz2
 _json _json.c
+_lsprof _lsprof.c rotatingtree.c
+_multiprocessing _multiprocessing/multiprocessing.c _multiprocessing/socket_connection.c _multiprocessing/semaphore.c
 
 SQLITE3_CFLAGS = -DMODULE_NAME='\\"sqlite3\\"' -DSQLITE_OMIT_LOAD_EXTENSION=1
 _sqlite3 $(SQLITE3_CFLAGS) -lsqlite3 -lpthread -ldl _sqlite/cache.c _sqlite/connection.c  _sqlite/cursor.c _sqlite/microprotocols.c _sqlite/module.c _sqlite/prepare_protocol.c _sqlite/row.c _sqlite/statement.c _sqlite/util.c
