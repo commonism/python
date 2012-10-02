@@ -208,7 +208,7 @@ _socket socketmodule.c
 #
 # First, look at Setup.config; configure may have set this for you.
 
-#crypt cryptmodule.c # -lcrypt	# crypt(3); needs -lcrypt on some systems
+crypt cryptmodule.c -lcrypt	# crypt(3); needs -lcrypt on some systems
 
 
 # Some more UNIX dependent modules -- off by default, since these
@@ -386,7 +386,8 @@ _codecs_kr cjkcodecs/_codecs_kr.c
 #bz2 bz2module.c
 _json _json.c
 
-#_sqlite3 _sqlite/module.c _sqlite/cache.c _sqlite/connection.c _sqlite/cursor.c _sqlite/microprotocols.c _sqlite/prepare_protocol.c _sqlite/row.c _sqlite/statement.c _sqlite/util.c -I$(srcdir)/Modules/_sqlite -DMODULE_NAME=sqlite3
+SQLITE3_CFLAGS = -DMODULE_NAME='\\"sqlite3\\"' -DSQLITE_OMIT_LOAD_EXTENSION=1
+_sqlite3 $(SQLITE3_CFLAGS) -lsqlite3 -lpthread -ldl _sqlite/cache.c _sqlite/connection.c  _sqlite/cursor.c _sqlite/microprotocols.c _sqlite/module.c _sqlite/prepare_protocol.c _sqlite/row.c _sqlite/statement.c _sqlite/util.c
 
 # Another example -- the 'xxsubtype' module shows C-level subtyping in action
 xxsubtype xxsubtype.c
